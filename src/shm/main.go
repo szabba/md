@@ -100,5 +100,10 @@ func (ashm AnalyticSHM) XVAt(t float64) (x, v Vector) {
 	return
 }
 
+func (ashm AnalyticSHM) Force() Force {
+
+	return Force(SingleHooke{K: ashm.K})
+}
+
 func main() {
 }
