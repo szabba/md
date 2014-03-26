@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -132,5 +133,56 @@ func (ashm AnalyticSHM) ForVerlet(dt float64) []Body {
 	}
 }
 
+func (ashm AnalyticSHM) DataHeader() {
+
+	fmt.Printf("#")
+	fmt.Printf("t x E Ek U ")
+	fmt.Printf("x_e v_e E_e Ek_e U_e x_e_resid ")
+	fmt.Printf("x_v v_e E_v Ek_v U_v x_v_resid\n")
+}
+
+func (ashm AnalyticSHM) Run(dt float64, steps int) {
+
+	ashm.DataHeader()
+
+	//force := ashm.Force()
+
+	//eulerState := ashm.ForEuler()
+	//verletState := ashm.ForVerlet(dt)
+
+	for t := 0.0; steps > 0; {
+
+		fmt.Printf("%f ", t)
+
+		_ = ashm.Analytic(t)
+
+		fmt.Println()
+
+		t += dt
+		steps--
+	}
+}
+
+func (ashm AnalyticSHM) Analytic(t float64) (x Vector) {
+
+	x, v := ashm.XVAt(t)
+
+	kinetic := ashm.M * math.Pow(v.Norm(), 2) / 2
+	potential := ashm.A.Norm() * math.Pow(x.Norm(), 2) / 2
+
+	totalE := kinetic + potential
+
+	fmt.Printf("%f %f %f %f ", x.Norm(), totalE, kinetic, potential)
+
+	return x
+}
+
 func main() {
+
+	shm := AnalyticSHM{
+		K: 1, M: 1, A: NewVector(1, 0, 0),
+	}
+
+	shm.Run(0.01, 500)
+
 }
