@@ -66,6 +66,17 @@ func (h Hooke) Accel(bs []Body, i int) (a Vector) {
 	return f.Scale(1 / b.M)
 }
 
+type SingleHooke struct {
+	K float64
+}
+
+func (sh SingleHooke) Accel(bs []Body, i int) (a Vector) {
+
+	b := bs[i]
+
+	return b.Xs[0].Scale(-sh.K / b.M)
+}
+
 type Force interface {
 	Accel(bs []Body, i int) (a Vector)
 }
