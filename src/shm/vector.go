@@ -1,7 +1,3 @@
-//  This Source Code Form is subject to the terms of the Mozilla Public
-//  License, v. 2.0. If a copy of the MPL was not distributed with this
-//  file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 package main
 
 import (
@@ -108,6 +104,12 @@ func (a Vector) Scale(s float64) (b Vector) {
 func (a Vector) Unit() Vector {
 
 	return a.Scale(1 / a.Norm())
+}
+
+// Calculate a unit vector and the vector norm at once
+func (a Vector) UnitAndNorm() (aU Vector, norm float64) {
+
+	return a.Unit(), a.Norm()
 }
 
 // Take the cross product of two vectors
