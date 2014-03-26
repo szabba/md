@@ -138,7 +138,7 @@ func (ashm AnalyticSHM) DataHeader() {
 	//fmt.Printf("# ")
 	fmt.Printf("t x v E Ek U ")
 	fmt.Printf("x_e v_e E_e Ek_e U_e x_e_resid ")
-	//fmt.Printf("x_v v_e E_v Ek_v U_v x_v_resid ")
+	fmt.Printf("x_v v_e E_v Ek_v U_v x_v_resid ")
 	fmt.Println()
 }
 
@@ -149,7 +149,7 @@ func (ashm AnalyticSHM) Run(dt float64, steps int) {
 	force := ashm.Force()
 
 	eulerState := ashm.ForEuler()
-	//verletState := ashm.ForVerlet(dt)
+	verletState := ashm.ForVerlet(dt)
 
 	for t := 0.0; steps > 0; {
 
@@ -159,6 +159,9 @@ func (ashm AnalyticSHM) Run(dt float64, steps int) {
 
 		ashm.EulerFormat(eulerState, x)
 		ashm.Step(Euler, eulerState, force, dt)
+
+		ashm.VerletFormat(verletState, x)
+		ashm.Step(Verlet, verletState, force, dt)
 
 		fmt.Println()
 
@@ -215,6 +218,23 @@ func (ashm AnalyticSHM) EulerFormat(bs []Body, x Vector) {
 	fmt.Printf(
 		"%f %f %f %f %f %f ",
 		xE, vE, total, kinetic, potential, residue,
+	)
+}
+
+func (ashm AnalyticSHM) VerletFormat(bs []Body, x Vector) {
+
+	xV, vV := bs[0].Xs[1].Dot(e_x), bs[0].Xs[1].Dot(e_x)
+
+	kinetic := ashm.M * math.Pow(vV, 2) / 2
+	potential := ashm.K * math.Pow(xV, 2) / 2
+
+	total := kinetic + potential
+
+	residue := math.Abs(x.Dot(e_x) - xV)
+
+	fmt.Printf(
+		"%f %f %f %f %f %f ",
+		xV, vV, total, kinetic, potential, residue,
 	)
 }
 
