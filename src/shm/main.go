@@ -158,7 +158,7 @@ func (ashm AnalyticSHM) Run(dt float64, steps int) {
 		x := ashm.Analytic(t)
 
 		ashm.EulerFormat(eulerState, x)
-		ashm.EulerStep(eulerState, force, dt)
+		ashm.Step(Euler, eulerState, force, dt)
 
 		fmt.Println()
 
@@ -186,7 +186,7 @@ func (ashm AnalyticSHM) Analytic(t float64) (x Vector) {
 	return x
 }
 
-func (ashm AnalyticSHM) EulerStep(bs []Body, f Force, dt float64) {
+func (ashm AnalyticSHM) Step(alg Integrator, bs []Body, f Force, dt float64) {
 
 	as := make([]Vector, len(bs))
 
@@ -197,7 +197,7 @@ func (ashm AnalyticSHM) EulerStep(bs []Body, f Force, dt float64) {
 
 	for i, body := range bs {
 
-		Euler(body.Xs, body.Vs, as[i], dt)
+		alg(body.Xs, body.Vs, as[i], dt)
 	}
 }
 
