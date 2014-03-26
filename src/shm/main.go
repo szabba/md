@@ -124,13 +124,17 @@ func (ashm AnalyticSHM) ForVerlet(dt float64) []Body {
 	x0, v0 := ashm.XVAt(0)
 	xPrev, vPrev := ashm.XVAt(-dt)
 
-	return []Body{
+	bs := []Body{
 		Body{
 			Xs: []Vector{x0, xPrev},
 			Vs: []Vector{v0, vPrev},
 			M:  ashm.M,
 		},
 	}
+
+	ashm.Step(Verlet, bs, ashm.Force(), dt)
+
+	return bs
 }
 
 func (ashm AnalyticSHM) DataHeader() {
