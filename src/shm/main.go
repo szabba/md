@@ -1,5 +1,10 @@
 package main
 
+type Body struct {
+	Xs, Vs []Vector
+	M      float64
+}
+
 // Shifts all the values in xs by one and puts x at the beginning.
 func Shift(xs []Vector, x Vector) {
 
