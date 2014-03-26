@@ -1,5 +1,6 @@
 package main
 
+// Shifts all the values in xs by one and puts x at the beginning.
 func Shift(xs []float64, x float64) {
 
 	for i := len(xs) - 1; i > 0; i-- {
@@ -12,6 +13,7 @@ func Shift(xs []float64, x float64) {
 
 type Integrator func(xs, vs []float64, a, dt float64)
 
+// Performs a step of an Euler integration
 func Euler(xs, vs []float64, a, dt float64) {
 
 	v := vs[0] + dt*a
