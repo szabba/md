@@ -40,5 +40,31 @@ func Verlet(xs, vs []Vector, a Vector, dt float64) {
 	Shift(xs, xNext)
 }
 
+type Spring struct {
+	K, L0 float64
+}
+
+type Hooke struct {
+	Springs [][]Spring
+}
+
+func (h Hooke) Accel(bs []Body, i int) (a Vector) {
+
+	f := NewZeroVector()
+
+	b := bs[i]
+
+	for j, b2 := range bs {
+
+		spring := h.Springs[i][j]
+
+		dir, l := b2.Xs[0].Minus(b.Xs[0]).UnitAndNorm()
+
+		f = f.Plus(dir.Scale(spring.K * (l - spring.L0)))
+	}
+
+	return f.Scale(1 / b.M)
+}
+
 func main() {
 }
