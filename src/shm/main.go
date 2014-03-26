@@ -31,10 +31,6 @@ func (h Hooke) Accel(bs []Body, i int) (a Vector) {
 	return f.Scale(1 / b.M)
 }
 
-type Force interface {
-	Accel(bs []Body, i int) (a Vector)
-}
-
 func main() {
 
 	shm := AnalyticSHM{
