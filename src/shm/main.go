@@ -1,7 +1,7 @@
 package main
 
 // Shifts all the values in xs by one and puts x at the beginning.
-func Shift(xs []float64, x float64) {
+func Shift(xs []Vector, x Vector) {
 
 	for i := len(xs) - 1; i > 0; i-- {
 
@@ -11,13 +11,13 @@ func Shift(xs []float64, x float64) {
 	xs[0] = x
 }
 
-type Integrator func(xs, vs []float64, a, dt float64)
+type Integrator func(xs, vs []Vector, a Vector, dt float64)
 
 // Performs a step of an Euler integration
-func Euler(xs, vs []float64, a, dt float64) {
+func Euler(xs, vs []Vector, a Vector, dt float64) {
 
-	v := vs[0] + dt*a
-	x := xs[0] + dt*v
+	v := vs[0].Plus(a.Scale(dt))
+	x := xs[0].Plus(v.Scale(dt))
 
 	Shift(vs, v)
 	Shift(xs, x)
@@ -26,12 +26,12 @@ func Euler(xs, vs []float64, a, dt float64) {
 // Performs a step of a Verlet integrator
 //
 // Note that v[0] will not be calculated until the next step
-func Verlet(xs, vs []float64, a, dt float64) {
+func Verlet(xs, vs []Vector, a Vector, dt float64) {
 
-	xNext := 2*xs[0] - xs[1] + dt*dt*a
-	v[0] = (xNext - xs[1]) / (2 * dt)
+	xNext := xs[0].Scale(2).Minus(xs[1]).Plus(a.Scale(dt * dt))
+	vs[0] = xNext.Minus(xs[1]).Scale(1 / (2 * dt))
 
-	Shift(vs, 0)
+	Shift(vs, NewZeroVector())
 	Shift(xs, xNext)
 }
 
