@@ -137,7 +137,7 @@ func (ashm AnalyticSHM) DataHeader() {
 
 	//fmt.Printf("# ")
 	fmt.Printf("t x v E Ek U ")
-	//fmt.Printf("x_e v_e E_e Ek_e U_e x_e_resid ")
+	fmt.Printf("x_e v_e E_e Ek_e U_e x_e_resid ")
 	//fmt.Printf("x_v v_e E_v Ek_v U_v x_v_resid ")
 	fmt.Println()
 }
@@ -146,16 +146,19 @@ func (ashm AnalyticSHM) Run(dt float64, steps int) {
 
 	ashm.DataHeader()
 
-	//force := ashm.Force()
+	force := ashm.Force()
 
-	//eulerState := ashm.ForEuler()
+	eulerState := ashm.ForEuler()
 	//verletState := ashm.ForVerlet(dt)
 
 	for t := 0.0; steps > 0; {
 
 		fmt.Printf("%f ", t)
 
-		_ = ashm.Analytic(t)
+		x := ashm.Analytic(t)
+
+		ashm.EulerFormat(eulerState, x)
+		ashm.EulerStep(eulerState, force, dt)
 
 		fmt.Println()
 
@@ -181,6 +184,38 @@ func (ashm AnalyticSHM) Analytic(t float64) (x Vector) {
 	)
 
 	return x
+}
+
+func (ashm AnalyticSHM) EulerStep(bs []Body, f Force, dt float64) {
+
+	as := make([]Vector, len(bs))
+
+	for i, _ := range bs {
+
+		as[i] = f.Accel(bs, i)
+	}
+
+	for i, body := range bs {
+
+		Euler(body.Xs, body.Vs, as[i], dt)
+	}
+}
+
+func (ashm AnalyticSHM) EulerFormat(bs []Body, x Vector) {
+
+	xE, vE := bs[0].Xs[0].Dot(e_x), bs[0].Vs[0].Dot(e_x)
+
+	kinetic := ashm.M * math.Pow(vE, 2) / 2
+	potential := ashm.K * math.Pow(xE, 2) / 2
+
+	total := kinetic + potential
+
+	residue := math.Abs(x.Dot(e_x) - xE)
+
+	fmt.Printf(
+		"%f %f %f %f %f %f ",
+		xE, vE, total, kinetic, potential, residue,
+	)
 }
 
 func main() {
