@@ -21,8 +21,18 @@ func Euler(xs, vs []float64, a, dt float64) {
 
 	Shift(vs, v)
 	Shift(xs, x)
+}
 
-	return
+// Performs a step of a Verlet integrator
+//
+// Note that v[0] will not be calculated until the next step
+func Verlet(xs, vs []float64, a, dt float64) {
+
+	xNext := 2*xs[0] - xs[1] + dt*dt*a
+	v[0] = (xNext - xs[1]) / (2 * dt)
+
+	Shift(vs, 0)
+	Shift(xs, xNext)
 }
 
 func main() {
