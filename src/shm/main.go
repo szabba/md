@@ -135,10 +135,11 @@ func (ashm AnalyticSHM) ForVerlet(dt float64) []Body {
 
 func (ashm AnalyticSHM) DataHeader() {
 
-	fmt.Printf("#")
-	fmt.Printf("t x E Ek U ")
-	fmt.Printf("x_e v_e E_e Ek_e U_e x_e_resid ")
-	fmt.Printf("x_v v_e E_v Ek_v U_v x_v_resid\n")
+	//fmt.Printf("# ")
+	fmt.Printf("t x v E Ek U ")
+	//fmt.Printf("x_e v_e E_e Ek_e U_e x_e_resid ")
+	//fmt.Printf("x_v v_e E_v Ek_v U_v x_v_resid ")
+	fmt.Println()
 }
 
 func (ashm AnalyticSHM) Run(dt float64, steps int) {
@@ -163,6 +164,8 @@ func (ashm AnalyticSHM) Run(dt float64, steps int) {
 	}
 }
 
+var e_x = NewVector(1, 0, 0)
+
 func (ashm AnalyticSHM) Analytic(t float64) (x Vector) {
 
 	x, v := ashm.XVAt(t)
@@ -172,7 +175,10 @@ func (ashm AnalyticSHM) Analytic(t float64) (x Vector) {
 
 	totalE := kinetic + potential
 
-	fmt.Printf("%f %f %f %f ", x.Norm(), totalE, kinetic, potential)
+	fmt.Printf(
+		"%f %f %f %f %f ",
+		x.Dot(e_x), v.Dot(e_x), totalE, kinetic, potential,
+	)
 
 	return x
 }
@@ -183,6 +189,6 @@ func main() {
 		K: 1, M: 1, A: NewVector(1, 0, 0),
 	}
 
-	shm.Run(0.01, 500)
+	shm.Run(0.01, 5000)
 
 }
