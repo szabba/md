@@ -1,5 +1,9 @@
 package main
 
+import (
+	"math"
+)
+
 type Body struct {
 	Xs, Vs []Vector
 	M      float64
@@ -79,6 +83,21 @@ func (sh SingleHooke) Accel(bs []Body, i int) (a Vector) {
 
 type Force interface {
 	Accel(bs []Body, i int) (a Vector)
+}
+
+type AnalyticSHM struct {
+	K, M float64
+	A    Vector
+}
+
+func (ashm AnalyticSHM) XVAt(t float64) (x, v Vector) {
+
+	omega := math.Sqrt(ashm.K / ashm.M)
+
+	x = ashm.A.Scale(math.Cos(omega * t))
+	v = ashm.A.Negate().Scale(omega * math.Sin(omega*t))
+
+	return
 }
 
 func main() {
