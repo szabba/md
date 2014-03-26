@@ -105,5 +105,18 @@ func (ashm AnalyticSHM) Force() Force {
 	return Force(SingleHooke{K: ashm.K})
 }
 
+func (ashm AnalyticSHM) ForEuler() []Body {
+
+	x0, v0 := ashm.XVAt(0)
+
+	return []Body{
+		Body{
+			Xs: []Vector{x0},
+			Vs: []Vector{v0},
+			M:  ashm.M,
+		},
+	}
+}
+
 func main() {
 }
