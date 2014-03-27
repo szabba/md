@@ -32,6 +32,6 @@ func main() {
 		K: 1, M: 1, A: NewVector(1, 0, 0),
 	}
 
-	shm.Run(0.05, 5000)
+	shm.Run(0.05, 500)
 
 }
