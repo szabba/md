@@ -157,7 +157,7 @@ func (ashm AnalyticSHM) EulerFormat(bs []Body, x Vector) {
 
 func (ashm AnalyticSHM) VerletFormat(bs []Body, x Vector) {
 
-	xV, vV := bs[0].Xs[1].Dot(e_x), bs[0].Xs[1].Dot(e_x)
+	xV, vV := bs[0].Xs[1].Dot(e_x), bs[0].Vs[1].Dot(e_x)
 
 	kinetic := ashm.M * math.Pow(vV, 2) / 2
 	potential := ashm.K * math.Pow(xV, 2) / 2
