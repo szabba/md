@@ -1,5 +1,10 @@
 package main
 
+import (
+	"../newton"
+	"../vect"
+)
+
 type Spring struct {
 	K, L0 float64
 }
@@ -8,9 +13,9 @@ type Hooke struct {
 	Springs [][]Spring
 }
 
-func (h Hooke) Accel(bs []Body, i int) (a Vector) {
+func (h Hooke) Accel(bs []newton.Body, i int) (a vect.Vector) {
 
-	f := NewZeroVector()
+	f := vect.NewZeroVector()
 
 	b := bs[i]
 
@@ -29,7 +34,7 @@ func (h Hooke) Accel(bs []Body, i int) (a Vector) {
 func main() {
 
 	shm := AnalyticSHM{
-		K: 1, M: 1, A: NewVector(1, 0, 0),
+		K: 1, M: 1, A: vect.NewVector(1, 0, 0),
 	}
 
 	shm.Run(0.05, 5000)

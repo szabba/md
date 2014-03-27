@@ -1,6 +1,8 @@
 package main
 
 import (
+	"../newton"
+	"../vect"
 	"fmt"
 	"math"
 )
@@ -9,7 +11,7 @@ type SingleHooke struct {
 	K float64
 }
 
-func (sh SingleHooke) Accel(bs []Body, i int) (a Vector) {
+func (sh SingleHooke) Accel(bs []newton.Body, i int) (a vect.Vector) {
 
 	b := bs[i]
 
@@ -18,10 +20,10 @@ func (sh SingleHooke) Accel(bs []Body, i int) (a Vector) {
 
 type AnalyticSHM struct {
 	K, M float64
-	A    Vector
+	A    vect.Vector
 }
 
-func (ashm AnalyticSHM) XVAt(t float64) (x, v Vector) {
+func (ashm AnalyticSHM) XVAt(t float64) (x, v vect.Vector) {
 
 	omega := math.Sqrt(ashm.K / ashm.M)
 
@@ -31,38 +33,38 @@ func (ashm AnalyticSHM) XVAt(t float64) (x, v Vector) {
 	return
 }
 
-func (ashm AnalyticSHM) Force() Force {
+func (ashm AnalyticSHM) Force() newton.Force {
 
-	return Force(SingleHooke{K: ashm.K})
+	return newton.Force(SingleHooke{K: ashm.K})
 }
 
-func (ashm AnalyticSHM) ForEuler() []Body {
+func (ashm AnalyticSHM) ForEuler() []newton.Body {
 
 	x0, v0 := ashm.XVAt(0)
 
-	return []Body{
-		Body{
-			Xs: []Vector{x0},
-			Vs: []Vector{v0},
+	return []newton.Body{
+		newton.Body{
+			Xs: []vect.Vector{x0},
+			Vs: []vect.Vector{v0},
 			M:  ashm.M,
 		},
 	}
 }
 
-func (ashm AnalyticSHM) ForVerlet(dt float64) []Body {
+func (ashm AnalyticSHM) ForVerlet(dt float64) []newton.Body {
 
 	x0, v0 := ashm.XVAt(0)
 	xPrev, vPrev := ashm.XVAt(-dt)
 
-	bs := []Body{
-		Body{
-			Xs: []Vector{x0, xPrev},
-			Vs: []Vector{v0, vPrev},
+	bs := []newton.Body{
+		newton.Body{
+			Xs: []vect.Vector{x0, xPrev},
+			Vs: []vect.Vector{v0, vPrev},
 			M:  ashm.M,
 		},
 	}
 
-	Step(Verlet, bs, ashm.Force(), dt)
+	newton.Step(newton.Verlet, bs, ashm.Force(), dt)
 
 	return bs
 }
@@ -72,7 +74,7 @@ func (ashm AnalyticSHM) DataHeader() {
 	//fmt.Printf("# ")
 	fmt.Printf("t x v E Ek U ")
 	fmt.Printf("x_e v_e E_e Ek_e U_e x_e_resid ")
-	fmt.Printf("x_v v_e E_v Ek_v U_v x_v_resid ")
+	fmt.Printf("x_v v_v E_v Ek_v U_v x_v_resid ")
 	fmt.Println()
 }
 
@@ -92,10 +94,10 @@ func (ashm AnalyticSHM) Run(dt float64, steps int) {
 		x := ashm.Analytic(t)
 
 		ashm.EulerFormat(eulerState, x)
-		Step(Euler, eulerState, force, dt)
+		newton.Step(newton.Euler, eulerState, force, dt)
 
 		ashm.VerletFormat(verletState, x)
-		Step(Verlet, verletState, force, dt)
+		newton.Step(newton.Verlet, verletState, force, dt)
 
 		fmt.Println()
 
@@ -104,9 +106,9 @@ func (ashm AnalyticSHM) Run(dt float64, steps int) {
 	}
 }
 
-var e_x = NewVector(1, 0, 0)
+var e_x = vect.NewVector(1, 0, 0)
 
-func (ashm AnalyticSHM) Analytic(t float64) (x Vector) {
+func (ashm AnalyticSHM) Analytic(t float64) (x vect.Vector) {
 
 	x, v := ashm.XVAt(t)
 
@@ -123,22 +125,7 @@ func (ashm AnalyticSHM) Analytic(t float64) (x Vector) {
 	return x
 }
 
-func Step(alg Integrator, bs []Body, f Force, dt float64) {
-
-	as := make([]Vector, len(bs))
-
-	for i, _ := range bs {
-
-		as[i] = f.Accel(bs, i)
-	}
-
-	for i, body := range bs {
-
-		alg(body.Xs, body.Vs, as[i], dt)
-	}
-}
-
-func (ashm AnalyticSHM) EulerFormat(bs []Body, x Vector) {
+func (ashm AnalyticSHM) EulerFormat(bs []newton.Body, x vect.Vector) {
 
 	xE, vE := bs[0].Xs[0].Dot(e_x), bs[0].Vs[0].Dot(e_x)
 
@@ -155,7 +142,7 @@ func (ashm AnalyticSHM) EulerFormat(bs []Body, x Vector) {
 	)
 }
 
-func (ashm AnalyticSHM) VerletFormat(bs []Body, x Vector) {
+func (ashm AnalyticSHM) VerletFormat(bs []newton.Body, x vect.Vector) {
 
 	xV, vV := bs[0].Xs[1].Dot(e_x), bs[0].Vs[1].Dot(e_x)
 
