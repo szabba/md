@@ -26,7 +26,7 @@ type Integrator func(xs, vs []Vector, a Vector, dt float64)
 func Euler(xs, vs []Vector, a Vector, dt float64) {
 
 	v := vs[0].Plus(a.Scale(dt))
-	x := xs[0].Plus(v.Scale(dt))
+	x := xs[0].Plus(vs[0].Scale(dt))
 
 	Shift(vs, v)
 	Shift(xs, x)
