@@ -48,7 +48,7 @@ func Verlet(xs, vs []vect.Vector, a vect.Vector, dt float64) {
 	xNext := xs[0].Scale(2).Minus(xs[1]).Plus(a.Scale(dt * dt))
 	vs[0] = xNext.Minus(xs[1]).Scale(1 / (2 * dt))
 
-	Shift(vs, vect.NewZeroVector())
+	Shift(vs, vect.Zero)
 	Shift(xs, xNext)
 }
 

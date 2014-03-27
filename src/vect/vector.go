@@ -27,6 +27,17 @@ func NewVector(x, y, z float64) Vector {
 	return v
 }
 
+var (
+	// A zero vector
+	Zero = NewZeroVector()
+	// An unit vector along the Cartesian X axis
+	UnitX = NewVector(1, 0, 0)
+	// An unit vector along the Cartesian Y axis
+	UnitY = NewVector(0, 1, 0)
+	// An unit vector along the Cartesian Z axis
+	UnitZ = NewVector(0, 0, 1)
+)
+
 // Copy the vector
 func (v Vector) Copy() (u Vector) {
 

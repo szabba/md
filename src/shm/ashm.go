@@ -110,8 +110,6 @@ func (ashm AnalyticSHM) Run(dt float64, steps int) {
 	}
 }
 
-var e_x = vect.NewVector(1, 0, 0)
-
 func (ashm AnalyticSHM) Analytic(t float64) (x vect.Vector) {
 
 	x, v := ashm.XVAt(t)
@@ -123,7 +121,7 @@ func (ashm AnalyticSHM) Analytic(t float64) (x vect.Vector) {
 
 	fmt.Printf(
 		"%f %f %f %f %f ",
-		x.Dot(e_x), v.Dot(e_x), totalE, kinetic, potential,
+		x.Dot(vect.UnitX), v.Dot(vect.UnitX), totalE, kinetic, potential,
 	)
 
 	return x
@@ -131,14 +129,14 @@ func (ashm AnalyticSHM) Analytic(t float64) (x vect.Vector) {
 
 func (ashm AnalyticSHM) EulerFormat(bs []newton.Body, x vect.Vector) {
 
-	xE, vE := bs[0].Xs[0].Dot(e_x), bs[0].Vs[0].Dot(e_x)
+	xE, vE := bs[0].Xs[0].Dot(vect.UnitX), bs[0].Vs[0].Dot(vect.UnitX)
 
 	kinetic := ashm.M * math.Pow(vE, 2) / 2
 	potential := ashm.K * math.Pow(xE, 2) / 2
 
 	total := kinetic + potential
 
-	residue := math.Abs(x.Dot(e_x) - xE)
+	residue := math.Abs(x.Dot(vect.UnitX) - xE)
 
 	fmt.Printf(
 		"%f %f %f %f %f %f ",
@@ -148,14 +146,14 @@ func (ashm AnalyticSHM) EulerFormat(bs []newton.Body, x vect.Vector) {
 
 func (ashm AnalyticSHM) VerletFormat(bs []newton.Body, x vect.Vector) {
 
-	xV, vV := bs[0].Xs[1].Dot(e_x), bs[0].Vs[1].Dot(e_x)
+	xV, vV := bs[0].Xs[1].Dot(vect.UnitX), bs[0].Vs[1].Dot(vect.UnitX)
 
 	kinetic := ashm.M * math.Pow(vV, 2) / 2
 	potential := ashm.K * math.Pow(xV, 2) / 2
 
 	total := kinetic + potential
 
-	residue := math.Abs(x.Dot(e_x) - xV)
+	residue := math.Abs(x.Dot(vect.UnitX) - xV)
 
 	fmt.Printf(
 		"%f %f %f %f %f %f ",
