@@ -1,10 +1,5 @@
 package main
 
-import (
-	"fmt"
-	"math"
-)
-
 type Spring struct {
 	K, L0 float64
 }

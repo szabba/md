@@ -1,5 +1,10 @@
 package main
 
+import (
+	"fmt"
+	"math"
+)
+
 type SingleHooke struct {
 	K float64
 }
@@ -57,7 +62,7 @@ func (ashm AnalyticSHM) ForVerlet(dt float64) []Body {
 		},
 	}
 
-	ashm.Step(Verlet, bs, ashm.Force(), dt)
+	Step(Verlet, bs, ashm.Force(), dt)
 
 	return bs
 }
@@ -87,10 +92,10 @@ func (ashm AnalyticSHM) Run(dt float64, steps int) {
 		x := ashm.Analytic(t)
 
 		ashm.EulerFormat(eulerState, x)
-		ashm.Step(Euler, eulerState, force, dt)
+		Step(Euler, eulerState, force, dt)
 
 		ashm.VerletFormat(verletState, x)
-		ashm.Step(Verlet, verletState, force, dt)
+		Step(Verlet, verletState, force, dt)
 
 		fmt.Println()
 
@@ -118,7 +123,7 @@ func (ashm AnalyticSHM) Analytic(t float64) (x Vector) {
 	return x
 }
 
-func (ashm AnalyticSHM) Step(alg Integrator, bs []Body, f Force, dt float64) {
+func Step(alg Integrator, bs []Body, f Force, dt float64) {
 
 	as := make([]Vector, len(bs))
 
