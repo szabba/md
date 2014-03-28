@@ -79,6 +79,24 @@ func (b *Body) VBefore(delta int) vect.Vector {
 	return b.Vs[b.currAt+delta]
 }
 
+// Position and velocity delta steps after now
+func (b *Body) After(delta int) (x, v vect.Vector) {
+
+	return b.XAfter(delta), b.VAfter(delta)
+}
+
+// Position delta steps after now
+func (b *Body) XAfter(delta int) vect.Vector {
+
+	return b.Xs[b.currAt+delta]
+}
+
+// Velocity delta steps after now
+func (b *Body) VAfter(delta int) vect.Vector {
+
+	return b.Vs[b.currAt+delta]
+}
+
 // Shifts all the values in xs by one and puts x at the beginning.
 func Shift(xs []vect.Vector, x vect.Vector) {
 
