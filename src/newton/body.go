@@ -34,6 +34,15 @@ func (b *Body) Mass() float64 {
 	return b.mass
 }
 
+// Put new values of x and v a the beginning of the remembered values
+//
+// The oldest values get discarded
+func (b *Body) Shift(x, v vect.Vector) {
+
+	Shift(b.Xs, x)
+	Shift(b.Vs, v)
+}
+
 // Shifts all the values in xs by one and puts x at the beginning.
 func Shift(xs []vect.Vector, x vect.Vector) {
 
