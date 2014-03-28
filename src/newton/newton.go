@@ -19,14 +19,28 @@ type Integrator interface {
 	Integrate(b *Body, a vect.Vector, dt float64)
 }
 
-// Performs a step of an Euler integration
-func Euler(xs, vs []vect.Vector, a vect.Vector, dt float64) {
+var (
+	Euler Integrator = euler{}
+)
 
-	v := vs[0].Plus(a.Scale(dt))
-	x := xs[0].Plus(vs[0].Scale(dt))
+type euler struct{}
 
-	Shift(vs, v)
-	Shift(xs, x)
+func (_ euler) StateLen() int {
+	return 1
+}
+
+func (_ euler) CurrentAt() int {
+	return 0
+}
+
+func (_ euler) Integrate(b *Body, a vect.Vector, dt float64) {
+
+	x0, v0 := b.Now()
+
+	v := v0.Plus(a.Scale(dt))
+	x := x0.Plus(v0.Scale(dt))
+
+	b.Shift(x, v)
 }
 
 // Performs a step of a Verlet integrator
