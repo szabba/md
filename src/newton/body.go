@@ -126,13 +126,13 @@ func (b *Body) After(delta int) (x, v vect.Vector) {
 // Position delta steps after now
 func (b *Body) XAfter(delta int) vect.Vector {
 
-	return b.Xs[b.currAt+delta]
+	return b.Xs[b.currAt-delta]
 }
 
 // Velocity delta steps after now
 func (b *Body) VAfter(delta int) vect.Vector {
 
-	return b.Vs[b.currAt+delta]
+	return b.Vs[b.currAt-delta]
 }
 
 // Set positon and velocity delta steps in the future
