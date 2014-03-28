@@ -61,6 +61,25 @@ func (b *Body) VNow() vect.Vector {
 	return b.Vs[b.currAt]
 }
 
+// Set current positon and velocity
+func (b *Body) SetNow(x, v vect.Vector) {
+
+	b.SetXNow(x)
+	b.SetVNow(v)
+}
+
+// Set current positon
+func (b *Body) SetXNow(x vect.Vector) {
+
+	b.Xs[b.currAt] = x
+}
+
+// Set current velocity
+func (b *Body) SetVNow(v vect.Vector) {
+
+	b.Vs[b.currAt] = v
+}
+
 // Position and velocity delta steps before now
 func (b *Body) Before(delta int) (x, v vect.Vector) {
 
