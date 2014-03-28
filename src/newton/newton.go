@@ -8,7 +8,16 @@ import (
 	"github.com/szabba/md/src/vect"
 )
 
-type Integrator func(xs, vs []vect.Vector, a vect.Vector, dt float64)
+// An integrator algorithm
+type Integrator interface {
+	// The total number of states kept at once by the algorithm
+	StateLen() int
+	// The location of the current state in the sequence of states kept track
+	// of
+	CurrentAt() int
+	// Performs the integration for a single body
+	Integrate(b Body, a vect.Vector, dt float64)
+}
 
 // Performs a step of an Euler integration
 func Euler(xs, vs []vect.Vector, a vect.Vector, dt float64) {
