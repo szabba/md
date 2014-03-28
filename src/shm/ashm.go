@@ -15,7 +15,7 @@ type SingleHooke struct {
 	K float64
 }
 
-func (sh SingleHooke) Accel(bs []newton.Body, i int) (a vect.Vector) {
+func (sh SingleHooke) Accel(bs []*newton.Body, i int) (a vect.Vector) {
 
 	b := bs[i]
 
@@ -49,7 +49,7 @@ func (ashm AnalyticSHM) ForEuler() []*newton.Body {
 	return []*newton.Body{newton.NewBody(newton.Euler, ashm.M)}
 }
 
-func (ashm AnalyticSHM) ForVerlet(dt float64) []newton.Body {
+func (ashm AnalyticSHM) ForVerlet(dt float64) []*newton.Body {
 
 	x0, v0 := ashm.XVAt(0)
 	xPrev, vPrev := ashm.XVAt(-dt)
@@ -115,7 +115,7 @@ func (ashm AnalyticSHM) Analytic(t float64) (x vect.Vector) {
 	return x
 }
 
-func (ashm AnalyticSHM) EulerFormat(bs []newton.Body, x vect.Vector) {
+func (ashm AnalyticSHM) EulerFormat(bs []*newton.Body, x vect.Vector) {
 
 	xE, vE := bs[0].Xs[0].Dot(vect.UnitX), bs[0].Vs[0].Dot(vect.UnitX)
 
@@ -132,7 +132,7 @@ func (ashm AnalyticSHM) EulerFormat(bs []newton.Body, x vect.Vector) {
 	)
 }
 
-func (ashm AnalyticSHM) VerletFormat(bs []newton.Body, x vect.Vector) {
+func (ashm AnalyticSHM) VerletFormat(bs []*newton.Body, x vect.Vector) {
 
 	xV, vV := bs[0].Xs[1].Dot(vect.UnitX), bs[0].Vs[1].Dot(vect.UnitX)
 
