@@ -10,13 +10,13 @@ import (
 
 // A force that acts upon a body
 type Force interface {
-	Accel(bs []Body, i int) (a vect.Vector)
+	Accel(bs []*Body, i int) (a vect.Vector)
 }
 
 // A combination of simple forces
 type SumForce []Force
 
-func (sf SumForce) Accel(bs []Body, i int) (a vect.Vector) {
+func (sf SumForce) Accel(bs []*Body, i int) (a vect.Vector) {
 
 	a = vect.Zero
 

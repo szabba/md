@@ -16,7 +16,7 @@ type Hooke struct {
 	Springs [][]Spring
 }
 
-func (h Hooke) Accel(bs []Body, i int) (a vect.Vector) {
+func (h Hooke) Accel(bs []*Body, i int) (a vect.Vector) {
 
 	f := vect.NewZeroVector()
 
