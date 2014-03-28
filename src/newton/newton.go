@@ -16,7 +16,7 @@ type Integrator interface {
 	// of
 	CurrentAt() int
 	// Performs the integration for a single body
-	Integrate(b Body, a vect.Vector, dt float64)
+	Integrate(b *Body, a vect.Vector, dt float64)
 }
 
 // Performs a step of an Euler integration
