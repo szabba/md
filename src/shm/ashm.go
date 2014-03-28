@@ -54,10 +54,8 @@ func (ashm AnalyticSHM) ForEuler() []*newton.Body {
 func (ashm AnalyticSHM) ForVerlet(dt float64) []*newton.Body {
 
 	b := newton.NewBody(newton.Verlet, ashm.M)
-	b.SetNow(ashm.XVAt(0))
-
-	xPrev, vPrev := ashm.XVAt(-dt)
-	b.SetBefore(xPrev, vPrev, 1)
+	b.Shift(ashm.XVAt(-dt))
+	b.Shift(ashm.XVAt(0))
 
 	bs := []*newton.Body{b}
 
