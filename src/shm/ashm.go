@@ -5,9 +5,9 @@
 package main
 
 import (
+	"fmt"
 	"github.com/szabba/md/src/newton"
 	"github.com/szabba/md/src/vect"
-	"fmt"
 	"math"
 )
 
@@ -19,7 +19,7 @@ func (sh SingleHooke) Accel(bs []newton.Body, i int) (a vect.Vector) {
 
 	b := bs[i]
 
-	return b.Xs[0].Scale(-sh.K / b.M)
+	return b.Xs[0].Scale(-sh.K / b.Mass())
 }
 
 type AnalyticSHM struct {
@@ -42,17 +42,11 @@ func (ashm AnalyticSHM) Force() newton.Force {
 	return newton.Force(SingleHooke{K: ashm.K})
 }
 
-func (ashm AnalyticSHM) ForEuler() []newton.Body {
+func (ashm AnalyticSHM) ForEuler() []*newton.Body {
 
 	x0, v0 := ashm.XVAt(0)
 
-	return []newton.Body{
-		newton.Body{
-			Xs: []vect.Vector{x0},
-			Vs: []vect.Vector{v0},
-			M:  ashm.M,
-		},
-	}
+	return []*newton.Body{newton.NewBody(newton.Euler, ashm.M)}
 }
 
 func (ashm AnalyticSHM) ForVerlet(dt float64) []newton.Body {
@@ -60,13 +54,7 @@ func (ashm AnalyticSHM) ForVerlet(dt float64) []newton.Body {
 	x0, v0 := ashm.XVAt(0)
 	xPrev, vPrev := ashm.XVAt(-dt)
 
-	bs := []newton.Body{
-		newton.Body{
-			Xs: []vect.Vector{x0, xPrev},
-			Vs: []vect.Vector{v0, vPrev},
-			M:  ashm.M,
-		},
-	}
+	bs := []*newton.Body{newton.NewBody(newton.Verlet, ashm.M)}
 
 	newton.Step(newton.Verlet, bs, ashm.Force(), dt)
 
