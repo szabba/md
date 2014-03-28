@@ -8,22 +8,6 @@ import (
 	"github.com/szabba/md/src/vect"
 )
 
-type Body struct {
-	Xs, Vs []vect.Vector
-	M      float64
-}
-
-// Shifts all the values in xs by one and puts x at the beginning.
-func Shift(xs []vect.Vector, x vect.Vector) {
-
-	for i := len(xs) - 1; i > 0; i-- {
-
-		xs[i] = xs[i-1]
-	}
-
-	xs[0] = x
-}
-
 type Integrator func(xs, vs []vect.Vector, a vect.Vector, dt float64)
 
 // Performs a step of an Euler integration
