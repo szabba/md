@@ -101,8 +101,8 @@ func (b *Body) VBefore(delta int) vect.Vector {
 // Set positon and velocity delta steps in the past
 func (b *Body) SetBefore(x, v vect.Vector, delta int) {
 
-	b.SetXBefore(x)
-	b.SetVBefore(v)
+	b.SetXBefore(x, delta)
+	b.SetVBefore(v, delta)
 }
 
 // Set positon delta steps in the past
@@ -138,8 +138,8 @@ func (b *Body) VAfter(delta int) vect.Vector {
 // Set positon and velocity delta steps in the future
 func (b *Body) SetAfter(x, v vect.Vector, delta int) {
 
-	b.SetXAfter(x)
-	b.SetVAfter(v)
+	b.SetXAfter(x, delta)
+	b.SetVAfter(v, delta)
 }
 
 // Set positon delta steps in the future
