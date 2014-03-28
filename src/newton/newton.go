@@ -57,8 +57,8 @@ func (_ verlet) CurrentAt() int {
 
 func (_ verlet) Integrate(b *Body, a vect.Vector, dt float64) {
 
-	xPast := b.XBefore(1)
-	xNext := b.XNow().Scale(2).Minus(xPast).Plus(a.Scale(math.Pow(dt, 2)))
+	xPast := b.XNow()
+	xNext := b.XAfter(1).Scale(2).Minus(xPast).Plus(a.Scale(math.Pow(dt, 2)))
 
 	b.Shift(xNext, vect.Zero)
 	b.SetVNow(xNext.Minus(xPast).Scale(1 / (2 * dt)))
