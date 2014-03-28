@@ -13,10 +13,6 @@ type Body struct {
 	M      float64
 }
 
-type Force interface {
-	Accel(bs []Body, i int) (a vect.Vector)
-}
-
 // Shifts all the values in xs by one and puts x at the beginning.
 func Shift(xs []vect.Vector, x vect.Vector) {
 
