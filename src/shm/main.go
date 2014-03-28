@@ -5,7 +5,7 @@
 package main
 
 import (
-	"../vect"
+	"github.com/szabba/md/src/vect"
 )
 
 func main() {
