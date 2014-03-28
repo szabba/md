@@ -55,7 +55,7 @@ func Verlet(xs, vs []vect.Vector, a vect.Vector, dt float64) {
 	Shift(xs, xNext)
 }
 
-func Step(algo Integrator, bs []Body, f Force, dt float64) {
+func Step(algo Integrator, bs []*Body, f Force, dt float64) {
 
 	as := make([]vect.Vector, len(bs))
 
