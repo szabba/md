@@ -98,6 +98,25 @@ func (b *Body) VBefore(delta int) vect.Vector {
 	return b.Vs[b.currAt+delta]
 }
 
+// Set positon and velocity delta steps in the past
+func (b *Body) SetBefore(x, v vect.Vector, delta int) {
+
+	b.SetXBefore(x)
+	b.SetVBefore(v)
+}
+
+// Set positon delta steps in the past
+func (b *Body) SetXBefore(x vect.Vector, delta int) {
+
+	b.Xs[b.currAt+delta] = x
+}
+
+// Set velocity delta steps in the past
+func (b *Body) SetVBefore(v vect.Vector, delta int) {
+
+	b.Vs[b.currAt+delta] = v
+}
+
 // Position and velocity delta steps after now
 func (b *Body) After(delta int) (x, v vect.Vector) {
 
