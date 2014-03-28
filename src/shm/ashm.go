@@ -44,17 +44,22 @@ func (ashm AnalyticSHM) Force() newton.Force {
 
 func (ashm AnalyticSHM) ForEuler() []*newton.Body {
 
-	x0, v0 := ashm.XVAt(0)
+	b := newton.NewBody(newton.Euler, ashm.M)
 
-	return []*newton.Body{newton.NewBody(newton.Euler, ashm.M)}
+	b.SetNow(ashm.XVAt(0))
+
+	return []*newton.Body{b}
 }
 
 func (ashm AnalyticSHM) ForVerlet(dt float64) []*newton.Body {
 
-	x0, v0 := ashm.XVAt(0)
-	xPrev, vPrev := ashm.XVAt(-dt)
+	b := newton.NewBody(newton.Verlet, ashm.M)
+	b.SetNow(ashm.XVAt(0))
 
-	bs := []*newton.Body{newton.NewBody(newton.Verlet, ashm.M)}
+	xPrev, vPrev := ashm.XVAt(-dt)
+	b.SetBefore(xPrev, vPrev, 1)
+
+	bs := []*newton.Body{b}
 
 	newton.Step(newton.Verlet, bs, ashm.Force(), dt)
 
