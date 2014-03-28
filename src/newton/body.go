@@ -135,6 +135,25 @@ func (b *Body) VAfter(delta int) vect.Vector {
 	return b.Vs[b.currAt+delta]
 }
 
+// Set positon and velocity delta steps in the future
+func (b *Body) SetAfter(x, v vect.Vector, delta int) {
+
+	b.SetXAfter(x)
+	b.SetVAfter(v)
+}
+
+// Set positon delta steps in the future
+func (b *Body) SetXAfter(x vect.Vector, delta int) {
+
+	b.Xs[b.currAt-delta] = x
+}
+
+// Set velocity delta steps in the future
+func (b *Body) SetVAfter(v vect.Vector, delta int) {
+
+	b.Vs[b.currAt-delta] = v
+}
+
 // Shifts all the values in xs by one and puts x at the beginning.
 func Shift(xs []vect.Vector, x vect.Vector) {
 
