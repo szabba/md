@@ -29,7 +29,7 @@ func NewBody(algo Integrator, mass float64) *Body {
 }
 
 // Give a body's mass
-func (b Body) Mass() float64 {
+func (b *Body) Mass() float64 {
 
 	return b.mass
 }
