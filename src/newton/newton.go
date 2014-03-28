@@ -6,6 +6,7 @@ package newton
 
 import (
 	"github.com/szabba/md/src/vect"
+	"math"
 )
 
 // An integrator algorithm
@@ -21,6 +22,7 @@ type Integrator interface {
 
 var (
 	Euler Integrator = euler{}
+	Verlet Integrator = verlet{}
 )
 
 type euler struct{}
@@ -43,16 +45,23 @@ func (_ euler) Integrate(b *Body, a vect.Vector, dt float64) {
 	b.Shift(x, v)
 }
 
-// Performs a step of a Verlet integrator
-//
-// Note that v[0] will not be calculated until the next step
-func Verlet(xs, vs []vect.Vector, a vect.Vector, dt float64) {
+type verlet struct {}
 
-	xNext := xs[0].Scale(2).Minus(xs[1]).Plus(a.Scale(dt * dt))
-	vs[0] = xNext.Minus(xs[1]).Scale(1 / (2 * dt))
+func (_ verlet) StateLen() int {
+	return 2
+}
 
-	Shift(vs, vect.Zero)
-	Shift(xs, xNext)
+func (_ verlet) CurrentAt() int {
+	return 1
+}
+
+func (_ verlet) Integrate(b *Body, a vect.Vector, dt float64) {
+
+	xPast := b.XBefore(1)
+	xNext := b.XNow().Scale(2).Minus(xPast).Plus(a.Scale(math.Pow(dt, 2)))
+
+	b.Shift(xNext, vect.Zero)
+	b.SetVNow(xNext.Minus(xPast).Scale(1 / (2 * dt)))
 }
 
 func Step(algo Integrator, bs []*Body, f Force, dt float64) {
