@@ -10,7 +10,7 @@ import (
 
 type Body struct {
 	Xs, Vs []vect.Vector
-	M      float64
+	mass   float64
 	currAt int
 }
 
@@ -22,10 +22,16 @@ func NewBody(algo Integrator, mass float64) *Body {
 	b.Xs = make([]vect.Vector, algo.StateLen())
 	b.Vs = make([]vect.Vector, algo.StateLen())
 
-	b.M = mass
+	b.mass = mass
 	b.currAt = algo.CurrentAt()
 
 	return b
+}
+
+// Give a body's mass
+func (b Body) Mass() float64 {
+
+	return b.mass
 }
 
 // Shifts all the values in xs by one and puts x at the beginning.

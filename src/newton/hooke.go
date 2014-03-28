@@ -31,5 +31,5 @@ func (h Hooke) Accel(bs []Body, i int) (a vect.Vector) {
 		f = f.Plus(dir.Scale(spring.K * (l - spring.L0)))
 	}
 
-	return f.Scale(1 / b.M)
+	return f.Scale(1 / b.Mass())
 }
