@@ -43,6 +43,24 @@ func (b *Body) Shift(x, v vect.Vector) {
 	Shift(b.Vs, v)
 }
 
+// Current positon and velocity
+func (b *Body) Now() (x, v vect.Vector) {
+
+	return b.XNow(), b.VNow()
+}
+
+// Current position
+func (b *Body) XNow() vect.Vector {
+
+	return b.Xs[b.currAt]
+}
+
+// Current velocity
+func (b *Body) VNow() vect.Vector {
+
+	return b.Vs[b.currAt]
+}
+
 // Shifts all the values in xs by one and puts x at the beginning.
 func Shift(xs []vect.Vector, x vect.Vector) {
 
