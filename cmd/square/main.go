@@ -6,7 +6,33 @@ package main
 
 import (
 	"github.com/szabba/md/newton"
+	"github.com/szabba/md/vect"
 )
+
+// A 'picky' force, that doesn't affect some bodies
+type PickyForce struct {
+	force   newton.Force
+	zeroFor []int
+}
+
+// Creates a picky version of a force
+func NewPicky(f newton.Force, zeroFor ...int) newton.Force {
+
+	return &PickyForce{force: f, zeroFor: zeroFor}
+}
+
+func (picky *PickyForce) Accel(bs []*newton.Body, i int) (a vect.Vector) {
+
+	for _, ignored := range picky.zeroFor {
+
+		if ignored == i {
+
+			return vect.Zero
+		}
+	}
+
+	return picky.force.Accel(bs, i)
+}
 
 // Creates a system containing a rectangular grid of m times n particles.
 func SetUpRect(m, n int) *newton.System {
