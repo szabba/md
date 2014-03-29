@@ -1,5 +1,6 @@
 # MD
 
+[![Build Status](https://drone.io/github.com/szabba/md/status.png)](https://drone.io/github.com/szabba/md/latest)
 [![GoDoc](https://godoc.org/github.com/szabba/md?status.png)](https://godoc.org/github.com/szabba/md)
 
 `src/vect` provides a 3D Vector type. `src/newton` has some utilities
