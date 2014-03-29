@@ -67,7 +67,7 @@ func NewRect(rows, cols int) *ParticleRect {
 // The row and column in which the i-th particle is
 func (rect *ParticleRect) RowAndColumn(ith int) (row, col int) {
 
-	return i % rect.rows, i / rect.rows
+	return ith % rect.rows, ith / rect.rows
 }
 
 // Initial, resting position of the i-th particle
