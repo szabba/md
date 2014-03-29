@@ -4,6 +4,10 @@
 
 package newton
 
+import (
+	"github.com/szabba/md/src/vect"
+)
+
 // A molecular dynamics system
 type System struct {
 	algo   Integrator
@@ -39,5 +43,21 @@ func (sys *System) AddForce(f Force) {
 	} else {
 
 		sys.SetForce(f)
+	}
+}
+
+// Perform an integration step with the given dt
+func (sys *System) Step(dt float64) {
+
+	as := make([]vect.Vector, len(sys.bodies))
+
+	for i, _ := range sys.bodies {
+
+		as[i] = sys.force.Accel(sys.bodies, i)
+	}
+
+	for i, body := range sys.bodies {
+
+		sys.algo.Integrate(body, as[i], dt)
 	}
 }
