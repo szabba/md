@@ -34,17 +34,26 @@ func (picky *PickyForce) Accel(bs []*newton.Body, i int) (a vect.Vector) {
 	return picky.force.Accel(bs, i)
 }
 
-// Creates a system containing a rectangular grid of m times n particles.
-func SetUpRect(m, n int) *newton.System {
+type ParticleRect struct {
+	*newton.System
+	rows, cols int
+}
 
-	sys := newton.NewSystem(newton.Verlet, m*n)
+// Creates a rectangular grid of particles
+func NewRect(rows, cols int) *ParticleRect {
 
-	for i := 0; i < sys.Bodies(); i++ {
-
-		sys.Body(i).SetMass(1)
+	rect := &ParticleRect{
+		rows: rows, cols: cols,
 	}
 
-	return sys
+	rect.System = newton.NewSystem(newton.Verlet, rows*cols)
+
+	for i := 0; i < rect.Bodies(); i++ {
+
+		rect.Body(i).SetMass(1)
+	}
+
+	return rect
 }
 
 func main() {
