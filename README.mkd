@@ -8,4 +8,4 @@ for performing Molecular Dynamics.
 
 `src/shm` is a program that produces a comparison between the analytic
 solution of a simple harmonic oscillator and simulations using the Euler
-and Stoermer-Veerlet algorithm.
+and Stoermer-Verlet algorithm.
