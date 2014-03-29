@@ -42,18 +42,24 @@ func (ashm AnalyticSHM) Force() newton.Force {
 	return newton.Force(SingleHooke{K: ashm.K})
 }
 
-func (ashm AnalyticSHM) ForEuler() []*newton.Body {
+func (ashm AnalyticSHM) ForEuler() *newton.System {
 
-	b := newton.NewBody(newton.Euler, ashm.M)
+	sys := newton.NewSystem(newton.Euler, 1)
 
+	sys.SetForce(ashm.Force())
+
+	b := sys.Body(0)
+
+	b.SetMass(ashm.M)
 	b.SetNow(ashm.XVAt(0))
 
-	return []*newton.Body{b}
+	return sys
 }
 
 func (ashm AnalyticSHM) ForVerlet(dt float64) []*newton.Body {
 
-	b := newton.NewBody(newton.Verlet, ashm.M)
+	b := newton.NewBody(newton.Verlet)
+	b.SetMass(ashm.M)
 	b.Shift(ashm.XVAt(-dt))
 	b.Shift(ashm.XVAt(0))
 
@@ -80,6 +86,7 @@ func (ashm AnalyticSHM) Run(dt float64, steps int) {
 	force := ashm.Force()
 
 	eulerState := ashm.ForEuler()
+
 	verletState := ashm.ForVerlet(dt)
 
 	for t := 0.0; steps > 0; {
@@ -89,7 +96,7 @@ func (ashm AnalyticSHM) Run(dt float64, steps int) {
 		x := ashm.Analytic(t)
 
 		ashm.EulerFormat(eulerState, x)
-		newton.Step(newton.Euler, eulerState, force, dt)
+		eulerState.Step(dt)
 
 		ashm.VerletFormat(verletState, x)
 		newton.Step(newton.Verlet, verletState, force, dt)
@@ -118,20 +125,22 @@ func (ashm AnalyticSHM) Analytic(t float64) (x vect.Vector) {
 	return x
 }
 
-func (ashm AnalyticSHM) EulerFormat(bs []*newton.Body, x vect.Vector) {
+func (ashm AnalyticSHM) EulerFormat(sys *newton.System, x vect.Vector) {
 
-	xE, vE := bs[0].Xs[0].Dot(vect.UnitX), bs[0].Vs[0].Dot(vect.UnitX)
+	xE, vE := sys.Body(0).Now()
 
-	kinetic := ashm.M * math.Pow(vE, 2) / 2
-	potential := ashm.K * math.Pow(xE, 2) / 2
+	xVal, vVal := xE.Dot(vect.UnitX), vE.Dot(vect.UnitX)
+
+	kinetic := ashm.M * math.Pow(vVal, 2) / 2
+	potential := ashm.K * math.Pow(xVal, 2) / 2
 
 	total := kinetic + potential
 
-	residue := math.Abs(x.Dot(vect.UnitX) - xE)
+	residue := math.Abs(x.Dot(vect.UnitX) - xVal)
 
 	fmt.Printf(
 		"%f %f %f %f %f %f ",
-		xE, vE, total, kinetic, potential, residue,
+		xVal, vVal, total, kinetic, potential, residue,
 	)
 }
 
