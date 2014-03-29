@@ -22,3 +22,22 @@ func NewSystem(algo Integrator, bodyCount int) *System {
 
 	return sys
 }
+
+// Set the system force
+func (sys *System) SetForce(f Force) {
+
+	sys.force = f
+}
+
+// Add a force to the system
+func (sys *System) AddForce(f Force) {
+
+	if sys.force != nil {
+
+		sys.force = Combine(sys.force, f)
+
+	} else {
+
+		sys.SetForce(f)
+	}
+}
