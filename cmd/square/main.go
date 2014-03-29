@@ -9,6 +9,14 @@ import (
 	"github.com/szabba/md/vect"
 )
 
+// A force that is always zero
+type ZeroForce struct{}
+
+func (_ ZeroForce) Accel(bs []*newton.Body, i int) (a vect.Vector) {
+
+	return vect.Zero
+}
+
 // A 'picky' force, that doesn't affect some bodies
 type PickyForce struct {
 	force   newton.Force
@@ -61,6 +69,8 @@ func NewRect(rows, cols int) *ParticleRect {
 
 	}
 
+	rect.SetForce(ZeroForce{})
+
 	return rect
 }
 
@@ -87,4 +97,7 @@ func (rect *ParticleRect) Size() (rows, cols int) {
 }
 
 func main() {
+
+	rect := NewRect(20, 20)
+	rect.Step(0.05)
 }
