@@ -6,8 +6,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/szabba/md/src/newton"
-	"github.com/szabba/md/src/vect"
+	"github.com/szabba/md/newton"
+	"github.com/szabba/md/vect"
 	"math"
 )
 
