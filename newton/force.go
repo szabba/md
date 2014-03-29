@@ -5,7 +5,7 @@
 package newton
 
 import (
-	"github.com/szabba/md/src/vect"
+	"github.com/szabba/md/vect"
 )
 
 // A force that acts upon a body

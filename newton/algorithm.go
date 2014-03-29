@@ -5,7 +5,7 @@
 package newton
 
 import (
-	"github.com/szabba/md/src/vect"
+	"github.com/szabba/md/vect"
 	"math"
 )
 
@@ -21,7 +21,7 @@ type Integrator interface {
 }
 
 var (
-	Euler Integrator = euler{}
+	Euler  Integrator = euler{}
 	Verlet Integrator = verlet{}
 )
 
@@ -45,7 +45,7 @@ func (_ euler) Integrate(b *Body, a vect.Vector, dt float64) {
 	b.Shift(x, v)
 }
 
-type verlet struct {}
+type verlet struct{}
 
 func (_ verlet) StateLen() int {
 	return 2
