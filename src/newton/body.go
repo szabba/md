@@ -15,17 +15,22 @@ type Body struct {
 }
 
 // Constructs a body of specified mass suitable for working with the integrator
-func NewBody(algo Integrator, mass float64) *Body {
+func NewBody(algo Integrator) *Body {
 
 	b := new(Body)
 
 	b.Xs = make([]vect.Vector, algo.StateLen())
 	b.Vs = make([]vect.Vector, algo.StateLen())
 
-	b.mass = mass
 	b.currAt = algo.CurrentAt()
 
 	return b
+}
+
+// Set a body's mass
+func (b *Body) SetMass(m float64) {
+
+	b.mass = m
 }
 
 // Give a body's mass
