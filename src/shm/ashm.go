@@ -49,25 +49,26 @@ func (ashm AnalyticSHM) ForEuler() *newton.System {
 	sys.SetForce(ashm.Force())
 
 	b := sys.Body(0)
-
 	b.SetMass(ashm.M)
+
 	b.SetNow(ashm.XVAt(0))
 
 	return sys
 }
 
-func (ashm AnalyticSHM) ForVerlet(dt float64) []*newton.Body {
+func (ashm AnalyticSHM) ForVerlet(dt float64) *newton.System {
 
-	b := newton.NewBody(newton.Verlet)
+	sys := newton.NewSystem(newton.Verlet, 1)
+
+	sys.SetForce(ashm.Force())
+
+	b := sys.Body(0)
 	b.SetMass(ashm.M)
+
 	b.Shift(ashm.XVAt(-dt))
 	b.Shift(ashm.XVAt(0))
 
-	bs := []*newton.Body{b}
-
-	newton.Step(newton.Verlet, bs, ashm.Force(), dt)
-
-	return bs
+	return sys
 }
 
 func (ashm AnalyticSHM) DataHeader() {
@@ -83,10 +84,7 @@ func (ashm AnalyticSHM) Run(dt float64, steps int) {
 
 	ashm.DataHeader()
 
-	force := ashm.Force()
-
 	eulerState := ashm.ForEuler()
-
 	verletState := ashm.ForVerlet(dt)
 
 	for t := 0.0; steps > 0; {
@@ -95,11 +93,11 @@ func (ashm AnalyticSHM) Run(dt float64, steps int) {
 
 		x := ashm.Analytic(t)
 
-		ashm.EulerFormat(eulerState, x)
+		ashm.Format(eulerState, x)
 		eulerState.Step(dt)
 
-		ashm.VerletFormat(verletState, x)
-		newton.Step(newton.Verlet, verletState, force, dt)
+		ashm.Format(verletState, x)
+		verletState.Step(dt)
 
 		fmt.Println()
 
@@ -125,11 +123,11 @@ func (ashm AnalyticSHM) Analytic(t float64) (x vect.Vector) {
 	return x
 }
 
-func (ashm AnalyticSHM) EulerFormat(sys *newton.System, x vect.Vector) {
+func (ashm AnalyticSHM) Format(sys *newton.System, x vect.Vector) {
 
-	xE, vE := sys.Body(0).Now()
+	xVect, vVect := sys.Body(0).Now()
 
-	xVal, vVal := xE.Dot(vect.UnitX), vE.Dot(vect.UnitX)
+	xVal, vVal := xVect.Dot(vect.UnitX), vVect.Dot(vect.UnitX)
 
 	kinetic := ashm.M * math.Pow(vVal, 2) / 2
 	potential := ashm.K * math.Pow(xVal, 2) / 2
@@ -141,22 +139,5 @@ func (ashm AnalyticSHM) EulerFormat(sys *newton.System, x vect.Vector) {
 	fmt.Printf(
 		"%f %f %f %f %f %f ",
 		xVal, vVal, total, kinetic, potential, residue,
-	)
-}
-
-func (ashm AnalyticSHM) VerletFormat(bs []*newton.Body, x vect.Vector) {
-
-	xV, vV := bs[0].Xs[1].Dot(vect.UnitX), bs[0].Vs[1].Dot(vect.UnitX)
-
-	kinetic := ashm.M * math.Pow(vV, 2) / 2
-	potential := ashm.K * math.Pow(xV, 2) / 2
-
-	total := kinetic + potential
-
-	residue := math.Abs(x.Dot(vect.UnitX) - xV)
-
-	fmt.Printf(
-		"%f %f %f %f %f %f ",
-		xV, vV, total, kinetic, potential, residue,
 	)
 }
