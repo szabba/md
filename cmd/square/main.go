@@ -80,6 +80,7 @@ func (rect *ParticleRect) RestingPosition(ith int) vect.Vector {
 	)
 }
 
+// Dimmensions of the rectangle
 func (rect *ParticleRect) Size() (rows, cols int) {
 
 	return rect.rows, rect.cols
