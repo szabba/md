@@ -22,7 +22,12 @@ func NewSystem(algo Integrator, bodyCount int) *System {
 	sys := new(System)
 
 	sys.algo = algo
-	sys.bodies = make([]*Body, 0, bodyCount)
+
+	sys.bodies = make([]*Body, bodyCount)
+	for i, _ := range sys.bodies {
+
+		sys.bodies[i] = NewBody(sys.algo)
+	}
 
 	return sys
 }
@@ -60,4 +65,16 @@ func (sys *System) Step(dt float64) {
 
 		sys.algo.Integrate(body, as[i], dt)
 	}
+}
+
+// The number of bodies in the system
+func (sys *System) Bodies() int {
+
+	return len(sys.bodies)
+}
+
+// The i-th body within the system
+func (sys *System) Body(i int) *Body {
+
+	return sys.bodies[i]
 }
