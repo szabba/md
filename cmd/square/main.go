@@ -4,5 +4,22 @@
 
 package main
 
+import (
+	"github.com/szabba/md/newton"
+)
+
+// Creates a system containing a rectangular grid of m times n particles.
+func SetUpRect(m, n int) *newton.System {
+
+	sys := newton.NewSystem(newton.Verlet, m*n)
+
+	for i := 0; i < sys.Bodies(); i++ {
+
+		sys.Body(i).SetMass(1)
+	}
+
+	return sys
+}
+
 func main() {
 }
