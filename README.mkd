@@ -3,9 +3,9 @@
 [![Build Status](https://drone.io/github.com/szabba/md/status.png)](https://drone.io/github.com/szabba/md/latest)
 [![GoDoc](https://godoc.org/github.com/szabba/md?status.png)](https://godoc.org/github.com/szabba/md)
 
-`src/vect` provides a 3D Vector type. `src/newton` has some utilities
-for performing Molecular Dynamics.
+`vect` provides a 3D Vector type. `newton` has some utilities for
+performing Molecular Dynamics.
 
-`src/shm` is a program that produces a comparison between the analytic
+`cmd/shm` is a program that produces a comparison between the analytic
 solution of a simple harmonic oscillator and simulations using the Euler
 and Stoermer-Verlet algorithm.
