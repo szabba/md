@@ -50,10 +50,34 @@ func NewRect(rows, cols int) *ParticleRect {
 
 	for i := 0; i < rect.Bodies(); i++ {
 
-		rect.Body(i).SetMass(1)
+		b := rect.Body(i)
+
+		b.SetMass(1)
+
+		pos := rect.RestingPosition(i)
+
+		b.Shift(pos, vect.Zero)
+		b.Shift(pos, vect.Zero)
+
 	}
 
 	return rect
+}
+
+// The row and column in which the i-th particle is
+func (rect *ParticleRect) RowAndColumn(ith int) (row, col int) {
+
+	return i % rect.rows, i / rect.rows
+}
+
+// Initial, resting position of the i-th particle
+func (rect *ParticleRect) RestingPosition(ith int) vect.Vector {
+
+	row, col := rect.RowAndColumn(ith)
+
+	return vect.UnitX.Scale(float64(row)).Plus(
+		vect.UnitX.Scale(float64(col)),
+	)
 }
 
 func (rect *ParticleRect) Size() (rows, cols int) {
