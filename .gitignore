@@ -1,0 +1,9 @@
+# Vim temporary files
+*.sw?
+
+# Gnuplot and data files
+*.gp
+*.dat
+
+# Command binaries
+shm
