@@ -56,5 +56,10 @@ func NewRect(rows, cols int) *ParticleRect {
 	return rect
 }
 
+func (rect *ParticleRect) Size() (rows, cols int) {
+
+	return rect.rows, rect.cols
+}
+
 func main() {
 }
