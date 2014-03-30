@@ -12,12 +12,12 @@ import (
 	"os"
 )
 
-// A force that is always zero
-type ZeroForce struct{}
+// A constant force
+type ConstForce vect.Vector
 
-func (_ ZeroForce) Accel(bs []*newton.Body, i int) (a vect.Vector) {
+func (f ConstForce) Accel(bs []*newton.Body, i int) (a vect.Vector) {
 
-	return vect.Zero
+	return vect.Vector(f).Scale(1 / bs[i].Mass())
 }
 
 // A 'picky' force, that doesn't affect some bodies
@@ -72,7 +72,7 @@ func NewRect(rows, cols int) *ParticleRect {
 
 	}
 
-	rect.SetForce(ZeroForce{})
+	rect.SetForce(ConstForce(vect.Zero))
 
 	return rect
 }
