@@ -118,7 +118,14 @@ func (a Vector) Scale(s float64) (b Vector) {
 }
 
 // Produce the unit vector oriented the same as a
+//
+// If the vector is zero -- returns itself
 func (a Vector) Unit() Vector {
+
+	if a.Equal(Zero) {
+
+		return a
+	}
 
 	return a.Scale(1 / a.Norm())
 }
