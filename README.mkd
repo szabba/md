@@ -9,3 +9,8 @@ performing Molecular Dynamics.
 `cmd/shm` is a program that produces a comparison between the analytic
 solution of a simple harmonic oscillator and simulations using the Euler
 and Stoermer-Verlet algorithm.
+
+`cmd/square` simulates a finite rectangle cut out of a square grid of
+particles connected with springs. The central particles (one, two or
+four, depending on the rectangle dimensions) are pulled with a certain
+vertical force.
