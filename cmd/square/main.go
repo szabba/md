@@ -9,6 +9,7 @@ import (
 	"github.com/szabba/md/newton"
 	"github.com/szabba/md/vect"
 	"io"
+	"os"
 )
 
 // A force that is always zero
@@ -98,6 +99,20 @@ func (rect *ParticleRect) Size() (rows, cols int) {
 	return rect.rows, rect.cols
 }
 
+func (rect *ParticleRect) Run(writeTo io.Writer, dt float64, steps int) {
+
+	format := &Formatter{rect: rect, writeTo: writeTo}
+
+	format.Header()
+
+	for i := 0; i < steps; i++ {
+
+		format.Frame()
+
+		rect.Step(dt)
+	}
+}
+
 // An output formatting type
 type Formatter struct {
 	rect    *ParticleRect
@@ -131,6 +146,6 @@ func (f Formatter) Frame() {
 
 func main() {
 
-	rect := NewRect(20, 20)
-	rect.Step(0.05)
+	rect := NewRect(2, 4)
+	rect.Run(os.Stdout, 0.05, 3)
 }
