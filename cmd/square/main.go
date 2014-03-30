@@ -99,6 +99,8 @@ func (rect *ParticleRect) Size() (rows, cols int) {
 	return rect.rows, rect.cols
 }
 
+// Runs the simulation for the given number of steps at a time step of dt
+// printing to writeTo
 func (rect *ParticleRect) Run(writeTo io.Writer, dt float64, steps int) {
 
 	format := &Formatter{rect: rect, writeTo: writeTo}
