@@ -89,7 +89,7 @@ func (rect *ParticleRect) RestingPosition(ith int) vect.Vector {
 	row, col := rect.RowAndColumn(ith)
 
 	return vect.UnitX.Scale(float64(row)).Plus(
-		vect.UnitX.Scale(float64(col)),
+		vect.UnitY.Scale(float64(col)),
 	)
 }
 
