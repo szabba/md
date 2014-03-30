@@ -100,17 +100,18 @@ func (rect *ParticleRect) Size() (rows, cols int) {
 
 // An output formatting type
 type Formatter struct {
-	rect *ParticleRect
+	rect    *ParticleRect
+	writeTo io.Writer
 }
 
 // Formats a data header
-func (f Formatter) Header(writeTo io.Writer) {
+func (f Formatter) Header() {
 
-	fmt.Fprintf(writeTo, "%d\n\n", f.rect.Bodies())
+	fmt.Fprintf(f.writeTo, "%d\n\n", f.rect.Bodies())
 }
 
 // Formats the description of ball states
-func (f Formatter) Frame(writeTo io.Writer) {
+func (f Formatter) Frame() {
 
 	for i := 0; i < f.rect.Bodies(); i++ {
 
@@ -119,13 +120,13 @@ func (f Formatter) Frame(writeTo io.Writer) {
 		x, v := b.Now()
 
 		fmt.Fprintf(
-			writeTo, "%d %f %f %f %f %f %f\n", i,
+			f.writeTo, "%d %f %f %f %f %f %f\n", i,
 			x[0], x[1], x[2],
 			v[0], v[1], v[2],
 		)
 
 	}
-	fmt.Fprintf(writeTo, "\n")
+	fmt.Fprintf(f.writeTo, "\n")
 }
 
 func main() {
