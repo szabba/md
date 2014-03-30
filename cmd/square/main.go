@@ -99,6 +99,47 @@ func (rect *ParticleRect) Size() (rows, cols int) {
 	return rect.rows, rect.cols
 }
 
+// Are the i-th and j-th particles neighbours?
+func (rect *ParticleRect) Neighbours(i, j int) bool {
+
+	xI, yI := rect.RowAndColumn(i)
+	xJ, yJ := rect.RowAndColumn(j)
+
+	nearInX := xI-1 == xJ || xJ == xI+1
+	nearInY := yI-1 == yJ || yJ == yI+1
+
+	sameX := xI == xJ
+	sameY := yI == yJ
+
+	colNeighbour := sameX && nearInY
+	rowNeighbour := sameY && nearInX
+
+	return colNeighbour || rowNeighbour
+}
+
+// Prepare a Hooke's force bidning neihbouring particles
+func (rect *ParticleRect) Hooke(k float64) newton.Force {
+
+	var h newton.Hooke
+
+	h.Springs = make([][]newton.Spring, rect.Bodies())
+	for i, _ := range h.Springs {
+
+		h.Springs[i] = make([]newton.Spring, rect.Bodies())
+		for j, _ := range h.Springs[i] {
+
+			if rect.Neighbours(i, j) {
+
+				h.Springs[i][j].K = k
+
+			}
+			h.Springs[i][j].L0 = 1
+		}
+	}
+
+	return h
+}
+
 // Runs the simulation for the given number of steps at a time step of dt
 // printing to writeTo
 func (rect *ParticleRect) Run(writeTo io.Writer, dt float64, steps int) {
@@ -149,5 +190,6 @@ func (f Formatter) Frame() {
 func main() {
 
 	rect := NewRect(2, 4)
+	rect.AddForce(rect.Hooke(1))
 	rect.Run(os.Stdout, 0.05, 3)
 }
