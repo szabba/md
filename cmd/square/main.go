@@ -145,37 +145,56 @@ func (rect *ParticleRect) Hooke(k float64) newton.Force {
 	return h
 }
 
-// Prepare a constant force that only affect the center of the rectangle
+// Is the i-th particle near the center in it's resting position?
+func (rect *ParticleRect) NearCenter(ith int) bool {
+
+	rows, cols := rect.Size()
+
+	center := vect.NewVector(float64(rows)/2, float64(cols)/2, 0)
+
+	fromCenter := rect.RestingPosition(ith).Minus(center)
+
+	return fromCenter.Norm() < 1
+}
+
+// Number of particles that are not near the center in their resting positions
+func (rect *ParticleRect) ExceptCenter() []int {
+
+	rows, cols := rect.Size()
+
+	centerSize := 1
+	if rows%2 == 0 {
+		centerSize *= 2
+	}
+	if cols%2 == 0 {
+		centerSize *= 2
+	}
+
+	rest := make([]int, rows*cols-centerSize)
+
+	for i, j := 0, 0; i < len(rest); j++ {
+
+		if !rect.NearCenter(j) {
+
+			i, rest[i] = i+1, j
+		}
+	}
+
+	return rest
+}
+
+// Prepare a constant force that only affects the center of the rectangle (ie
+// ignores everything except it)
 //
 // Depending on the shape of the rectangle this will pull 1, 2 or 4 particles.
 // The force applied per particle will be divided by this number.
 func (rect *ParticleRect) CentralPull(pull vect.Vector) newton.Force {
 
-	rows, cols := rect.Size()
+	ignored := rect.ExceptCenter()
 
-	xRange, yRange := make([]int, rows%2), make([]int, cols%2)
-	for i, x := 0, rows/2; i < len(xRange); i, x = i+1, x+1 {
+	pulled := float64(rect.Bodies() - len(ignored))
 
-		xRange[i] = x
-	}
-	for i, y := 0, cols/2; i < len(yRange); i, y = i+1, y+1 {
-
-		yRange[i] = y
-	}
-
-	i, picked := 0, make([]int, len(xRange)*len(yRange))
-	for _, x := range xRange {
-		for _, y := range yRange {
-
-			picked[i] = y*cols + x
-			i++
-		}
-	}
-
-	return NewPicky(
-		ConstForce(pull.Scale(1/float64(len(picked)))),
-		picked...,
-	)
+	return NewPicky(ConstForce(pull.Scale(1/pulled)), ignored...)
 }
 
 // Runs the simulation for the given number of steps at a time step of dt
