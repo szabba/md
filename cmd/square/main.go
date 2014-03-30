@@ -5,11 +5,14 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/szabba/md/newton"
 	"github.com/szabba/md/vect"
 	"io"
+	"log"
 	"os"
+	"strconv"
 )
 
 // A constant force
@@ -222,9 +225,80 @@ func (f Formatter) Frame() {
 	fmt.Fprintf(f.writeTo, "\n")
 }
 
+const usage string = `Usage of %s:
+
+	Simulate a rectangular surface made of particles interconnected with
+	strings.
+
+		%s [options] ROWS COLS
+
+	ROWS and COLS determines the shape and size of the rectangle. They must
+	both be at least 1.
+
+Options:
+`
+
+func Help() {
+
+	program := os.Args[0]
+
+	fmt.Fprintf(os.Stderr, usage, program, program)
+
+	flag.PrintDefaults()
+}
+
 func main() {
 
-	rect := NewRect(2, 4)
-	rect.AddForce(rect.Hooke(1))
-	rect.Run(os.Stdout, 0.05, 3)
+	var (
+		usage    bool
+		p, k, dt float64
+		steps    int
+	)
+
+	log.SetFlags(0)
+
+	flag.Float64Var(
+		&p, "pull", 1,
+		"Magnitude of the vertical pulling force. When negative, the force pulls down.",
+	)
+	flag.Float64Var(&dt, "dt", 0.05, "Time step")
+	flag.Float64Var(&k, "k", 1, "Hooke's constant")
+	flag.IntVar(&steps, "steps", 5, "Simulation steps to perform")
+	flag.BoolVar(&usage, "help", false, "Print usage string")
+
+	flag.Parse()
+
+	if usage {
+
+		Help()
+
+	} else if len(flag.Args()) != 2 {
+
+		log.Fatal("Both ROWS and COLS need to be specified")
+
+	} else {
+
+		var (
+			rows, cols int
+			err        error
+		)
+
+		rows, err = strconv.Atoi(flag.Arg(0))
+		if err != nil {
+
+			log.Print("ROWS needs to be an integer")
+			log.Fatal(err.Error())
+		}
+		cols, err = strconv.Atoi(flag.Arg(1))
+		if err != nil {
+
+			log.Print("COLS needs to be an integer")
+			log.Fatal(err.Error())
+		}
+
+		rect := NewRect(rows, cols)
+		rect.AddForce(rect.Hooke(k))
+		rect.AddForce(rect.CentralPull(vect.UnitZ.Scale(p)))
+		rect.Run(os.Stdout, dt, steps)
+	}
 }
