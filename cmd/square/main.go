@@ -5,8 +5,10 @@
 package main
 
 import (
+	"fmt"
 	"github.com/szabba/md/newton"
 	"github.com/szabba/md/vect"
+	"io"
 )
 
 // A force that is always zero
@@ -94,6 +96,36 @@ func (rect *ParticleRect) RestingPosition(ith int) vect.Vector {
 func (rect *ParticleRect) Size() (rows, cols int) {
 
 	return rect.rows, rect.cols
+}
+
+// An output formatting type
+type Formatter struct {
+	rect *ParticleRect
+}
+
+// Formats a data header
+func (f Formatter) Header(writeTo io.Writer) {
+
+	fmt.Fprintf(writeTo, "%d\n\n", f.rect.Bodies())
+}
+
+// Formats the description of ball states
+func (f Formatter) Frame(writeTo io.Writer) {
+
+	for i := 0; i < f.rect.Bodies(); i++ {
+
+		b := f.rect.Body(i)
+
+		x, v := b.Now()
+
+		fmt.Fprintf(
+			writeTo, "%d %f %f %f %f %f %f\n", i,
+			x[0], x[1], x[2],
+			v[0], v[1], v[2],
+		)
+
+	}
+	fmt.Fprintf(writeTo, "\n")
 }
 
 func main() {
