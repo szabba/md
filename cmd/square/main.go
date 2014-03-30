@@ -51,6 +51,8 @@ type ParticleRect struct {
 }
 
 // Creates a rectangular grid of particles
+//
+// The program's behaviour when rows or cols are less than 1 is unspecified
 func NewRect(rows, cols int) *ParticleRect {
 
 	rect := &ParticleRect{
