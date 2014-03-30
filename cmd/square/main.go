@@ -142,6 +142,39 @@ func (rect *ParticleRect) Hooke(k float64) newton.Force {
 	return h
 }
 
+// Prepare a constant force that only affect the center of the rectangle
+//
+// Depending on the shape of the rectangle this will pull 1, 2 or 4 particles.
+// The force applied per particle will be divided by this number.
+func (rect *ParticleRect) CentralPull(pull vect.Vector) newton.Force {
+
+	rows, cols := rect.Size()
+
+	xRange, yRange := make([]int, rows%2), make([]int, cols%2)
+	for i, x := 0, rows/2; i < len(xRange); i, x = i+1, x+1 {
+
+		xRange[i] = x
+	}
+	for i, y := 0, cols/2; i < len(yRange); i, y = i+1, y+1 {
+
+		yRange[i] = y
+	}
+
+	i, picked := 0, make([]int, len(xRange)*len(yRange))
+	for _, x := range xRange {
+		for _, y := range yRange {
+
+			picked[i] = y*cols + x
+			i++
+		}
+	}
+
+	return NewPicky(
+		ConstForce(pull.Scale(1/float64(len(picked)))),
+		picked...,
+	)
+}
+
 // Runs the simulation for the given number of steps at a time step of dt
 // printing to writeTo
 func (rect *ParticleRect) Run(writeTo io.Writer, dt float64, steps int) {
