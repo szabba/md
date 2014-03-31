@@ -70,7 +70,7 @@ func Step(algo Integrator, bs []*Body, f Force, dt float64) {
 
 	for i, _ := range bs {
 
-		as[i] = f.Accel(bs, i)
+		as[i] = f.Accel(bs, i, dt)
 	}
 
 	for i, body := range bs {

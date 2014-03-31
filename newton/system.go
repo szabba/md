@@ -58,7 +58,7 @@ func (sys *System) Step(dt float64) {
 
 	for i, _ := range sys.bodies {
 
-		as[i] = sys.force.Accel(sys.bodies, i)
+		as[i] = sys.force.Accel(sys.bodies, i, dt)
 	}
 
 	for i, body := range sys.bodies {

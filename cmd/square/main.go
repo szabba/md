@@ -18,7 +18,7 @@ import (
 // A constant force
 type ConstForce vect.Vector
 
-func (f ConstForce) Accel(bs []*newton.Body, i int) (a vect.Vector) {
+func (f ConstForce) Accel(bs []*newton.Body, i int, dt float64) (a vect.Vector) {
 
 	return vect.Vector(f).Scale(1 / bs[i].Mass())
 }
@@ -35,7 +35,7 @@ func NewPicky(f newton.Force, zeroFor ...int) newton.Force {
 	return &PickyForce{force: f, zeroFor: zeroFor}
 }
 
-func (picky *PickyForce) Accel(bs []*newton.Body, i int) (a vect.Vector) {
+func (picky *PickyForce) Accel(bs []*newton.Body, i int, dt float64) (a vect.Vector) {
 
 	for _, ignored := range picky.zeroFor {
 
@@ -45,7 +45,7 @@ func (picky *PickyForce) Accel(bs []*newton.Body, i int) (a vect.Vector) {
 		}
 	}
 
-	return picky.force.Accel(bs, i)
+	return picky.force.Accel(bs, i, dt)
 }
 
 type ParticleRect struct {

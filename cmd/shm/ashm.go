@@ -15,7 +15,7 @@ type SingleHooke struct {
 	K float64
 }
 
-func (sh SingleHooke) Accel(bs []*newton.Body, i int) (a vect.Vector) {
+func (sh SingleHooke) Accel(bs []*newton.Body, i int, dt float64) (a vect.Vector) {
 
 	b := bs[i]
 
