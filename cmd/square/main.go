@@ -23,31 +23,6 @@ func (f ConstForce) Accel(bs []*newton.Body, i int, dt float64) (a vect.Vector) 
 	return vect.Vector(f).Scale(1 / bs[i].Mass())
 }
 
-// A 'picky' force, that doesn't affect some bodies
-type PickyForce struct {
-	force   newton.Force
-	zeroFor []int
-}
-
-// Creates a picky version of a force
-func NewPicky(f newton.Force, zeroFor ...int) newton.Force {
-
-	return &PickyForce{force: f, zeroFor: zeroFor}
-}
-
-func (picky *PickyForce) Accel(bs []*newton.Body, i int, dt float64) (a vect.Vector) {
-
-	for _, ignored := range picky.zeroFor {
-
-		if ignored == i {
-
-			return vect.Zero
-		}
-	}
-
-	return picky.force.Accel(bs, i, dt)
-}
-
 type ParticleRect struct {
 	*newton.System
 	rows, cols int
@@ -194,7 +169,7 @@ func (rect *ParticleRect) CentralPull(pull vect.Vector) newton.Force {
 
 	pulled := float64(rect.Bodies() - len(ignored))
 
-	return NewPicky(ConstForce(pull.Scale(1/pulled)), ignored...)
+	return newton.NewPicky(ConstForce(pull.Scale(1/pulled)), ignored...)
 }
 
 // Runs the simulation for the given number of steps at a time step of dt
