@@ -11,22 +11,20 @@ import (
 )
 
 // A three component cartesian vector
-type Vector []float64
+type Vector struct {
+	x, y, z float64
+}
 
 // Create new zero vector
 func NewZeroVector() Vector {
 
-	return Vector(make([]float64, 3))
+	return Vector{}
 }
 
 // Create new vector
 func NewVector(x, y, z float64) Vector {
 
-	v := NewZeroVector()
-
-	v[0], v[1], v[2] = x, y, z
-
-	return v
+	return Vector{x: x, y: y, z: z}
 }
 
 var (
@@ -41,42 +39,25 @@ var (
 )
 
 // Copy the vector
-func (v Vector) Copy() (u Vector) {
+func (v Vector) Copy() Vector {
 
-	u = NewZeroVector()
-
-	for i, vComp := range v {
-
-		u[i] = vComp
-	}
-
-	return u
+	return v
 }
 
 // Add two vectors
-func (a Vector) Plus(b Vector) (c Vector) {
+func (a Vector) Plus(b Vector) Vector {
 
-	c = NewZeroVector()
-
-	for i, _ := range a {
-
-		c[i] = a[i] + b[i]
+	return Vector{
+		x: a.x + b.x,
+		y: a.y + b.y,
+		z: a.z + b.z,
 	}
-
-	return c
 }
 
 // Invert a vector's direction
-func (a Vector) Negate() (minusA Vector) {
+func (a Vector) Negate() Vector {
 
-	minusA = NewZeroVector()
-
-	for i, aComponent := range a {
-
-		minusA[i] = -aComponent
-	}
-
-	return minusA
+	return Vector{x: -a.x, y: -a.y, z: -a.z}
 }
 
 // Subtract two vectors
@@ -88,14 +69,7 @@ func (a Vector) Minus(b Vector) Vector {
 // Take the dot product of two vectors
 func (a Vector) Dot(b Vector) float64 {
 
-	sum := 0.0
-
-	for i, _ := range a {
-
-		sum += a[i] * b[i]
-	}
-
-	return sum
+	return a.x*b.x + a.y*b.y + a.z*b.z
 }
 
 // Calculate the norm of a vector
@@ -107,14 +81,7 @@ func (a Vector) Norm() float64 {
 // Scale a vector by s
 func (a Vector) Scale(s float64) (b Vector) {
 
-	b = a.Copy()
-
-	for i, _ := range a {
-
-		b[i] *= s
-	}
-
-	return b
+	return Vector{x: s * a.x, y: s * a.y, z: s * a.z}
 }
 
 // Produce the unit vector oriented the same as a
@@ -139,30 +106,17 @@ func (a Vector) UnitAndNorm() (aU Vector, norm float64) {
 // Take the cross product of two vectors
 func (a Vector) Cross(b Vector) (c Vector) {
 
-	c = NewZeroVector()
-
-	for i, _ := range a {
-
-		c[i] += a[(i+1)%3] * b[(i+2)%3]
-
-		c[i] -= a[(i+2)%3] * b[(i+1)%3]
+	return Vector{
+		x: a.y*b.z - a.z*b.y,
+		y: a.z*b.x - a.x*b.z,
+		z: a.x*b.y - a.y*b.x,
 	}
-
-	return c
 }
 
 // Compare two vectors for equality
 func (a Vector) Equal(b Vector) bool {
 
-	for i, _ := range a {
-
-		if a[i] != b[i] {
-
-			return false
-		}
-	}
-
-	return true
+	return a == b
 }
 
 // Decompose a vector into the part parallel and orthogonal to another one.
