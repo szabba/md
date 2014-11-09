@@ -7,12 +7,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/szabba/md/newton"
-	"github.com/szabba/md/vect"
 	"io"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/szabba/md/newton"
+	"github.com/szabba/md/vect"
 )
 
 // A constant force
@@ -200,6 +201,12 @@ func (f Formatter) Header() {
 	fmt.Fprintf(f.writeTo, "%d\n\n", f.rect.Bodies())
 }
 
+var (
+	X = vect.NewVector(1, 0, 0)
+	Y = vect.NewVector(0, 1, 0)
+	Z = vect.NewVector(0, 0, 1)
+)
+
 // Formats the description of ball states
 func (f Formatter) Frame() {
 
@@ -211,8 +218,8 @@ func (f Formatter) Frame() {
 
 		fmt.Fprintf(
 			f.writeTo, "%d %f %f %f %f %f %f\n", i,
-			x[0], x[1], x[2],
-			v[0], v[1], v[2],
+			x.Dot(X), x.Dot(Y), x.Dot(Z),
+			v.Dot(X), v.Dot(Y), v.Dot(Z),
 		)
 
 	}
